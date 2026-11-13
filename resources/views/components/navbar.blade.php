@@ -24,8 +24,3 @@
         </div>
     </div>
 </nav>
-=======
-<div>
-    <!-- Simplicity is an acquired taste. - Katharine Gerould -->
-</div>
->>>>>>> e55815f95676074968c7313deff238e0f6781269

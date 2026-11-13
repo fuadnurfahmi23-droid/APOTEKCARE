@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <nav class="navbar navbar-expand-lg navbar-warung position-fixed w-100">
     <div class="container-fluid" style="padding: 0 7rem">
 

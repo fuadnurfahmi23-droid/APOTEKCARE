@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <nav class="navbar navbar-expand-lg navbar-warung position-fixed w-100">
     <div class="container-fluid" style="padding: 0 7rem">
 
@@ -23,3 +24,8 @@
         </div>
     </div>
 </nav>
+=======
+<div>
+    <!-- Simplicity is an acquired taste. - Katharine Gerould -->
+</div>
+>>>>>>> e55815f95676074968c7313deff238e0f6781269

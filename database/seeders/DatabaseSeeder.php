@@ -14,12 +14,14 @@ class DatabaseSeeder extends Seeder
         // Akun demo
         User::updateOrCreate(['email' => 'admin@apotekcare.test'], [
             'name' => 'Admin',
+            'username' => 'admin',
             'password' => 'password',
             'role' => 'admin',
         ]);
 
         User::updateOrCreate(['email' => 'public@apotekcare.test'], [
             'name' => 'Public',
+            'username' => 'public',
             'password' => 'password',
             'role' => 'public',
         ]);

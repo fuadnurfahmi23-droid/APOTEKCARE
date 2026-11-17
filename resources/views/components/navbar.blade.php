@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-warung position-fixed w-100">
+<nav class="navbar navbar-expand-lg navbar-warung sticky-top bg-white shadow-sm">
     <div class="container-fluid" style="padding: 0 7rem">
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar">

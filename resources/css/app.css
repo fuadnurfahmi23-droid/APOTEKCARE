@@ -7,3 +7,46 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+/* =================================
+   CSS DASHBOARD APOTEKCARE
+================================= */
+
+/* Background halaman */
+body {
+    background-color: #f5f7f6;
+}
+
+/* Tampilan dasar kartu */
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+/* Warna kartu Total Obat */
+.stat-obat {
+    background-color: #e5f5eb;
+}
+
+/* Warna kartu Total Stok */
+.stat-stok {
+    background-color: #e7f0ff;
+}
+
+/* Warna kartu Kedaluwarsa */
+.stat-expired {
+    background-color: #fff3df;
+}
+
+/* Warna kartu Pendapatan */
+.stat-pendapatan {
+    background-color: #ffe8e8;
+}
+
+/* Ukuran ikon */
+.stat-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}

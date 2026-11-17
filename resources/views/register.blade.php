@@ -18,18 +18,26 @@
             <form action="{{ url('/register') }}" method="POST">
                 @csrf
                 <div class="mb-3">
+<<<<<<< HEAD
                     <label for="nama" class="form-label">Nama</label>
                     <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama') }}" maxlength="100" required autofocus>
+=======
+                    <label for="name" class="form-label">Nama</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" maxlength="255" required autofocus>
+>>>>>>> ccb060305702ba952d63501fcb40e1e2334f8ece
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                 </div>
                 <div class="mb-3">
+<<<<<<< HEAD
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}" minlength="4" maxlength="30" required>
                 </div>
                 <div class="mb-3">
+=======
+>>>>>>> ccb060305702ba952d63501fcb40e1e2334f8ece
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" minlength="6" required>
                 </div>
@@ -41,7 +49,11 @@
             </form>
 
             <p class="text-center mt-3 mb-0">
+<<<<<<< HEAD
                 Sudah punya akun? <a href="{{ url('/login') }}">Login</a>
+=======
+                Sudah punya akun? <a href="{{ url('/') }}">Login</a>
+>>>>>>> ccb060305702ba952d63501fcb40e1e2334f8ece
             </p>
         </div>
     </main>

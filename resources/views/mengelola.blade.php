@@ -6,14 +6,14 @@
     </div>
     <div class="produck">
         <div class="kategory">
-            
+            list kategori
         </div>
         <div class="list_produck">
             <div class="searcing">
-
+                sercing
             </div>
             <div class="list">
-
+                produk
             </div>
         </div>
     </div>

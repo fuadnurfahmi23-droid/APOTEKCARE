@@ -83,8 +83,4 @@
         </div>
     </div>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> ccb060305702ba952d63501fcb40e1e2334f8ece

@@ -68,13 +68,4 @@ class pagescontroler extends Controller
             ->with('error', 'Email atau password salah.');
     }
 
-    // ===== Logout =====
-
-    public function logout(Request $request){
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
-    }
 }

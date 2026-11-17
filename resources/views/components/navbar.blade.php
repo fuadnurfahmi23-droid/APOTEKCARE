@@ -19,12 +19,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/riwayat">riwayat</a>
                 </li>
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button class="nav-link border-0 bg-transparent" type="submit">Logout</button>
-                    </form>
-                </li>
             </ul>
         </div>
     </div>

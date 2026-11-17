@@ -50,3 +50,28 @@ body {
     font-size: 28px;
     margin-bottom: 10px;
 }
+
+/* Memastikan navbar dan isinya terlihat */
+.navbar-warung {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background-color: white !important;
+}
+
+.navbar-warung .navbar-collapse {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+.navbar-warung .navbar-nav {
+    display: flex !important;
+    flex-direction: row;
+}
+
+.navbar-warung .nav-link {
+    display: block !important;
+    color: #212529 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}

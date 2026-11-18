@@ -37,21 +37,3 @@
         </button>
     </nav>
 </aside>
-        <div class="collapse navbar-collapse" id="menuNavbar">
-            <ul class="navbar-nav ms-auto align-items-center gap-5">
-                <li class="nav-item">
-                    <a class="nav-link" href="/dashboard">dasboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/mengelola">mengelola</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profil">Profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/riwayat">riwayat</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>

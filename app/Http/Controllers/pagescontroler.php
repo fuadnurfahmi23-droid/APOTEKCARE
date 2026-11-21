@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BatchObat;
 use App\Models\Obat;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -39,7 +39,7 @@ class pagescontroler extends Controller
 
     public function semuaObat(): View
     {
-        $obats = Obat::with(['batches' => fn (Builder $query): Builder => $query->tersedia()])
+        $obats = Obat::with(['batches' => fn (HasMany $query) => $query->tersedia()])
             ->orderBy('nama')
             ->get();
 
@@ -107,7 +107,7 @@ class pagescontroler extends Controller
 
     public function hapusObat(): View
     {
-        $obats = Obat::with(['batches' => fn (Builder $query): Builder => $query->tersedia()])
+        $obats = Obat::with(['batches' => fn (HasMany $query) => $query->tersedia()])
             ->orderBy('nama')
             ->get();
 
@@ -123,7 +123,7 @@ class pagescontroler extends Controller
 
     public function prioritasObat(): View
     {
-        $obats = Obat::with(['batches' => fn (Builder $query): Builder => $query->tersedia()])
+        $obats = Obat::with(['batches' => fn (HasMany $query) => $query->tersedia()])
             ->orderBy('nama')
             ->get()
             ->filter(function (Obat $obat): bool {

@@ -50,6 +50,7 @@
                 <div class="logo"><i class="bi bi-capsule"></i></div>
                 <h4 class="fw-bold mb-0">Apotek Sehat</h4>
                 <small class="text-muted">Hidup sehat dengan obat yang tepat</small>
+                <h6 class="text-muted">Mati Cepat</h6>
             </div>
 
             @if (session('error'))

@@ -1,135 +1,120 @@
-
 @extends('layout.app')
 
+@section('title', 'Dashboard - ApotekCare')
+
 @section('isi')
-
-<style>
-    body {
-        background-color: #f5f7f6;
-    }
-
-    .stat-card {
-        border: none;
-        border-radius: 12px;
-    }
-
-    .stat-icon {
-        font-size: 28px;
-        margin-bottom: 10px;
-    }
-</style>
-
-<div class="container py-4">
-
-    <!-- BAGIAN 1: HEADER DASHBOARD -->
-    <div class="mb-4">
-        <h3 class="fw-bold">Dashboard ApotekCare</h3>
-        <p class="text-muted">
-            Selamat datang di sistem manajemen ApotekCare.
-        </p>
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #ecfdf5; color: #10b981; font-size: 1.3rem;">
+            <i class="bi bi-grid"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold mb-0">Dashboard ApotekCare</h4>
+            <p class="text-muted small mb-0">Pantau stok, expired, dan prioritas obat dalam satu tampilan.</p>
+        </div>
     </div>
 
-
-    <!-- BAGIAN 2: KARTU STATISTIK -->
+    <!-- 4 Kartu Statistik (Sesuai Prototype PDF) -->
     <div class="row g-3 mb-4">
-
-        <!-- Total Obat -->
         <div class="col-md-3">
-            <div class="card stat-card shadow-sm p-3">
-                <i class="bi bi-capsule text-success stat-icon"></i>
-                <p class="text-muted mb-1">Total Jenis Obat</p>
-                <h3 class="fw-bold">100</h3>
-            </div>
-        </div>
-
-        <!-- Total Stok -->
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm p-3">
-                <i class="bi bi-box-seam text-primary stat-icon"></i>
-                <p class="text-muted mb-1">Total Stok Valid</p>
-                <h3 class="fw-bold">1.200</h3>
-            </div>
-        </div>
-
-        <!-- Kedaluwarsa -->
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm p-3">
-                <i class="bi bi-exclamation-triangle text-warning stat-icon"></i>
-                <p class="text-muted mb-1">Segera Kedaluwarsa</p>
-                <h3 class="fw-bold">5 Batch</h3>
-            </div>
-        </div>
-
-        <!-- Pendapatan -->
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm p-3">
-                <i class="bi bi-cash-stack text-danger stat-icon"></i>
-                <p class="text-muted mb-1">Pendapatan Hari Ini</p>
-                <h3 class="fw-bold">Rp 1.500.000</h3>
-            </div>
-        </div>
-
-    </div>
-
-
-    <!-- BAGIAN 3: AREA GRAFIK -->
-    <div class="row g-3">
-
-        <div class="col-md-8">
-            <div class="card stat-card shadow-sm p-4 h-100">
-
-                <h5 class="fw-bold mb-3">Grafik Penjualan</h5>
-
-                <div class="bg-light rounded p-5 text-center">
-                    <i class="bi bi-bar-chart-line fs-1 text-success"></i>
-                    <p class="text-muted mt-2 mb-0">
-                        Grafik penjualan akan ditampilkan di sini.
-                    </p>
+            <div class="card-clean p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #ecfdf5; color: #10b981; font-size: 1.3rem;">
+                    <i class="bi bi-capsule"></i>
                 </div>
-
-            </div>
-        </div>
-
-
-        <!-- BAGIAN 4: INFORMASI PENTING -->
-        <div class="col-md-4">
-            <div class="card stat-card shadow-sm p-4 h-100">
-
-                <h5 class="fw-bold mb-3">Informasi Penting</h5>
-
-                <div class="mb-3">
-                    <i class="bi bi-exclamation-circle text-warning"></i>
-                    <strong> Stok dan Kedaluwarsa</strong>
-                    <p class="text-muted small">
-                        Terdapat 5 batch yang perlu diperiksa.
-                    </p>
-                </div>
-
-                <hr>
-
-                <div class="mb-3">
-                    <i class="bi bi-box-seam text-success"></i>
-                    <strong> Manajemen Stok</strong>
-                    <p class="text-muted small">
-                        Pantau ketersediaan stok obat.
-                    </p>
-                </div>
-
-                <hr>
-
                 <div>
-                    <i class="bi bi-graph-up text-primary"></i>
-                    <strong> Laporan Penjualan</strong>
-                    <p class="text-muted small">
-                        Pantau perkembangan transaksi penjualan.
-                    </p>
+                    <small class="text-muted d-block">Total Obat</small>
+                    <h4 class="fw-bold mb-0 text-success">{{ $totalObat }} <span class="fs-6 fw-normal text-muted">Jenis</span></h4>
                 </div>
-
             </div>
         </div>
 
+        <div class="col-md-3">
+            <div class="card-clean p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #fffbeb; color: #f59e0b; font-size: 1.3rem;">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <div>
+                    <small class="text-muted d-block">Stok Menipis</small>
+                    <h4 class="fw-bold mb-0 text-warning">{{ $stokMenipis }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-clean p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #eff6ff; color: #3b82f6; font-size: 1.3rem;">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div>
+                    <small class="text-muted d-block">Mendekati Expired</small>
+                    <h4 class="fw-bold mb-0 text-primary">{{ $mendekatiExpired }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-clean p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #fef2f2; color: #ef4444; font-size: 1.3rem;">
+                    <i class="bi bi-trash3"></i>
+                </div>
+                <div>
+                    <small class="text-muted d-block">Expired</small>
+                    <h4 class="fw-bold mb-0 text-danger">{{ $sudahExpired }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Tabel Ringkasan Stok (Sesuai Prototype PDF) -->
+    <div class="card-clean p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">Stok & Monitoring Kedaluwarsa</h6>
+            <a href="{{ url('/mengelola') }}" class="btn btn-sm btn-outline-success">Lihat Semua Obat</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nama Obat</th>
+                        <th>Stok</th>
+                        <th>Expired</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($ringkasan as $item)
+                    <tr>
+                        <td class="fw-medium">{{ $item['nama'] }}</td>
+                        <td>{{ $item['stok'] }} {{ $item['satuan'] }}</td>
+                        <td>{{ $item['expired'] ? $item['expired']->format('d/m/Y') : '-' }}</td>
+                        <td>
+                    @switch($item['status'])
+                    @case('expired')
+                        <span class="badge bg-danger">Expired</span>
+                        @break
+                    @case('habis')
+                        <span class="badge bg-secondary">Habis</span>
+                        @break
+                    @case('menipis')
+                        <span class="badge bg-warning text-dark">Stok Menipis</span>
+                        @break
+                    @case('segera')
+                        <span class="badge bg-info text-dark">Mendekati Expired</span>
+                        @break
+                    @default
+                        <span class="badge bg-success">Aman</span>
+                @endswitch
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4" class="text-center text-muted py-4">Belum ada data obat.</td>
+        </tr>
+    @endforelse
+</tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
 @endsection

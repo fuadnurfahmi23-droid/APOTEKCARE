@@ -20,6 +20,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/kasir', [pagescontroler::class, 'kasir'])->name('kasir');
     Route::get('/riwayat', [pagescontroler::class, 'riwayat'])->name('riwayat');
     Route::get('/mengelola', [pagescontroler::class, 'mengelola'])->name('mengelola');
+    Route::post('/mengelola', [pagescontroler::class, 'simpanObatModal'])->name('mengelola.simpan');
+    Route::put('/mengelola/{obat}', [pagescontroler::class, 'updateObat'])->whereNumber('obat')->name('mengelola.update');
+    Route::get('/obat/{obat}', [pagescontroler::class, 'detailObat'])->whereNumber('obat')->name('obat.detail');
 
     // ==========================================
     // MENU BARU (Sesuai Sidebar Inventory/Investor)

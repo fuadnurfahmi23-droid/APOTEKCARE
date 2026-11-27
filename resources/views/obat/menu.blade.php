@@ -48,9 +48,28 @@
                     <label for="nama" class="form-label">Nama obat</label>
                     <input id="nama" name="nama" class="form-control" value="{{ old('nama') }}" required>
                 </div>
+                @php
+                    $daftarKategori = $kategoris->isEmpty()? collect(['Obat Bebas', 'Vitamin', 'Antibiotik', 'Alat Kesehatan']): $kategoris;
+                @endphp
+
                 <div class="col-md-6">
                     <label for="kategori" class="form-label">Kategori</label>
-                    <input id="kategori" name="kategori" class="form-control" value="{{ old('kategori') }}" required>
+                    <select id="kategori" name="kategori" class="form-select" required>
+                        @foreach ($daftarKategori as $kat)
+                            <option value="{{ $kat }}" @selected(old('kategori') === $kat)>{{ $kat }}</option>
+                        @endforeach
+                        <option value="__lainnya__" @selected(old('kategori') === '__lainnya__')>Lainnya...</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 {{ old('kategori') === '__lainnya__' ? '' : 'd-none' }}" id="wrapKategoriLainnya">
+                    <label for="kategori_lainnya" class="form-label">Nama kategori baru</label>
+                    <input id="kategori_lainnya" name="kategori_lainnya" class="form-control"value="{{ old('kategori_lainnya') }}" maxlength="80" placeholder="Contoh: Obat Herbal">
+                </div>
+
+                <div class="col-12">
+                    <label for="deskripsi" class="form-label">Deskripsi</label>
+                    <textarea id="deskripsi" name="deskripsi" class="form-control" rows="2" placeholder="Opsional">{{ old('deskripsi') }}</textarea>
                 </div>
                 <div class="col-md-6">
                     <label for="satuan" class="form-label">Satuan</label>
@@ -134,7 +153,7 @@
                     </thead>
                     <tbody>
                         @forelse ($obats as $obat)
-                            @php($stokTersedia = $obat->batches->sum('sisa_stok'))
+                            @php($stokTersedia = $obat->batches->filter(fn ($b) => $b->tanggal_kedaluwarsa->gte(today()))->sum('sisa_stok'))
                             <tr>
                                 <td>{{ $obat->kode }}</td>
                                 <td>{{ $obat->nama }}</td>
@@ -144,11 +163,14 @@
                                     <td>Rp {{ number_format((float) $obat->harga_jual, 0, ',', '.') }}</td>
                                 @elseif ($halaman === 'prioritas-obat')
                                     <td>
-                                        @if ($stokTersedia <= $obat->batas_minimum)
-                                            <span class="badge bg-warning text-dark">Stok menipis</span>
+                                        @if ($obat->batches->contains(fn ($b) => $b->tanggal_kedaluwarsa->lt(today())))
+                                            <span class="badge bg-danger">Expired</span>
                                         @endif
-                                        @if ($obat->batches->contains(fn ($batch) => $batch->tanggal_kedaluwarsa->lte(today()->addDays(\App\Models\BatchObat::AMBANG_SEGERA_HARI))))
-                                            <span class="badge bg-danger">Segera kedaluwarsa</span>
+                                        @if ($stokTersedia <= $obat->batas_minimum)
+                                            <span class="badge bg-warning text-dark">{{ $stokTersedia <= 0 ? 'Habis' : 'Stok menipis' }}</span>
+                                        @endif
+                                        @if ($obat->batches->contains(fn ($b) => $b->tanggal_kedaluwarsa->gte(today()) && $b->tanggal_kedaluwarsa->lte(today()->addDays(\App\Models\BatchObat::AMBANG_SEGERA_HARI))))
+                                            <span class="badge bg-info text-dark">Segera kedaluwarsa</span>
                                         @endif
                                     </td>
                                 @elseif ($halaman === 'hapus-obat')
@@ -174,4 +196,23 @@
         </div>
     @endif
 </div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('kategori');
+    const wrap = document.getElementById('wrapKategoriLainnya');
+    if (!select || !wrap) return; // hanya ada di halaman Daftarkan Obat
+
+    const input = document.getElementById('kategori_lainnya');
+
+    function toggle() {
+        const lainnya = select.value === '__lainnya__';
+        wrap.classList.toggle('d-none', !lainnya);
+        input.required = lainnya;
+    }
+    select.addEventListener('change', toggle);
+    toggle();
+});
+</script>
+@endpush
 @endsection

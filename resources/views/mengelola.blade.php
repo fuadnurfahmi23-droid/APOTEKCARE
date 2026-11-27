@@ -117,6 +117,19 @@
 </style>
 
 <div class="container-fluid">
+    @if (session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <!-- Banner Judul -->
     <div class="judul-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
@@ -125,7 +138,7 @@
             <p class="mb-0 opacity-75 small">Kelola stok obat, filter kategori, dan pantau ketersediaan produk.</p>
         </div>
         <button class="btn btn-light text-success fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalTambahObat">
-            <i class="bi bi-plus-circle me-1"></i> Tambah Obat Baru
+            <i class="bi bi-plus-circle me-1"></i>Tambah Obat Baru
         </button>
     </div>
 
@@ -133,22 +146,14 @@
         <!-- BAGIAN KATEGORI -->
         <aside class="kategory-sidebar shadow-sm">
             <h6 class="fw-bold mb-3">Kategori Obat</h6>
-
             <button class="category-btn active" data-category="semua">
                 <i class="bi bi-grid me-2"></i> Semua Produk
             </button>
-            <button class="category-btn" data-category="obat bebas">
-                <i class="bi bi-capsule me-2"></i> Obat Bebas
-            </button>
-            <button class="category-btn" data-category="vitamin">
-                <i class="bi bi-heart-pulse me-2"></i> Vitamin
-            </button>
-            <button class="category-btn" data-category="antibiotik">
-                <i class="bi bi-bandaid me-2"></i> Antibiotik
-            </button>
-            <button class="category-btn" data-category="alat kesehatan">
-                <i class="bi bi-thermometer me-2"></i> Alat Kesehatan
-            </button>
+            @foreach ($kategoris as $kategori)
+                <button class="category-btn" data-category="{{ strtolower($kategori) }}">
+                    <i class="bi bi-tag me-2"></i> {{ $kategori }}
+                </button>
+            @endforeach
         </aside>
 
         <!-- BAGIAN DAFTAR PRODUK -->
@@ -169,156 +174,71 @@
                     <h5 class="fw-bold mb-0">Daftar Produk</h5>
                     <small class="text-muted">Pilihan produk kesehatan ApotekCare</small>
                 </div>
-                <span class="badge bg-success px-3 py-2" id="jumlahProduk">6 Produk</span>
+                <span class="badge bg-success px-3 py-2" id="jumlahProduk">{{ $obats->count() }} Produk</span>
             </div>
 
             <!-- KARTU PRODUK -->
             <div class="produk-grid" id="produkGrid">
-                <!-- PRODUK 1 -->
-                <div class="produk-card" data-category="obat bebas" data-name="paracetamol">
-                    <div class="produk-image"><i class="bi bi-capsule"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Obat Bebas</span>
-                        <h6>Paracetamol</h6>
-                        <p>Obat untuk membantu meredakan demam dan nyeri.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 5.000</span>
-                            <small class="text-muted">Stok: 50</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Paracetamol"
-                            data-category="Obat Bebas"
-                            data-stok="50 Strip"
-                            data-expired="20/12/2026"
-                            data-description="Obat untuk membantu meredakan demam dan nyeri."
-                            data-price="Rp 5.000">
-                            Lihat Detail
-                        </button>
-                    </div>
-                </div>
+    @foreach ($obats as $obat)
+        @php
+            $stok = (int) $obat->stok_tersedia;
+            $kat = strtolower($obat->kategori);
+            $ikon = match ($kat) {
+                'vitamin' => 'bi-heart-pulse',
+                'antibiotik' => 'bi-bandaid',
+                'alat kesehatan' => 'bi-thermometer-half',
+                default => 'bi-capsule',
+            };
+            $expired = $obat->expired_terdekat
+                ? \Carbon\Carbon::parse($obat->expired_terdekat)->format('d/m/Y')
+                : '-';
+            $harga = 'Rp ' . number_format($obat->harga_jual, 0, ',', '.');
+        @endphp
 
-                <!-- PRODUK 2 -->
-                <div class="produk-card" data-category="vitamin" data-name="vitamin c">
-                    <div class="produk-image"><i class="bi bi-heart-pulse"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Vitamin</span>
-                        <h6>Vitamin C</h6>
-                        <p>Suplemen vitamin untuk membantu memenuhi kebutuhan vitamin C.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 15.000</span>
-                            <small class="text-muted">Stok: 35</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Vitamin C"
-                            data-category="Vitamin"
-                            data-stok="35 Botol"
-                            data-expired="30/07/2026"
-                            data-description="Suplemen vitamin untuk membantu memenuhi kebutuhan vitamin C."
-                            data-price="Rp 15.000">
-                            Lihat Detail
-                        </button>
-                    </div>
+        <div class="produk-card" data-category="{{ $kat }}" data-name="{{ strtolower($obat->nama . ' ' . $obat->kode) }}">
+            <div class="produk-image"><i class="bi {{ $ikon }}"></i></div>
+            <div class="produk-info">
+                <span class="produk-category">{{ $obat->kategori }}</span>
+                <h6>{{ $obat->nama }}</h6>
+                <p>{{ $obat->deskripsi }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="produk-price mb-0">{{ $harga }}</span>
+                    <small class="{{ $stok <= $obat->batas_minimum ? 'text-danger fw-semibold' : 'text-muted' }}">
+                        Stok: {{ $stok }}
+                    </small>
                 </div>
-
-                <!-- PRODUK 3 -->
-                <div class="produk-card" data-category="obat bebas" data-name="promag">
-                    <div class="produk-image"><i class="bi bi-capsule"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Obat Bebas</span>
-                        <h6>Promag</h6>
-                        <p>Produk untuk membantu meredakan gejala maag.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 12.000</span>
-                            <small class="text-muted">Stok: 24</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Promag"
-                            data-category="Obat Bebas"
-                            data-stok="24 Box"
-                            data-expired="15/11/2026"
-                            data-description="Produk untuk membantu meredakan gejala maag."
-                            data-price="Rp 12.000">
-                            Lihat Detail
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PRODUK 4 -->
-                <div class="produk-card" data-category="vitamin" data-name="vitamin b complex">
-                    <div class="produk-image"><i class="bi bi-heart-pulse"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Vitamin</span>
-                        <h6>Vitamin B Complex</h6>
-                        <p>Suplemen yang mengandung kelompok vitamin B.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 18.000</span>
-                            <small class="text-muted">Stok: 18</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Vitamin B Complex"
-                            data-category="Vitamin"
-                            data-stok="18 Botol"
-                            data-expired="10/09/2026"
-                            data-description="Suplemen yang mengandung kelompok vitamin B."
-                            data-price="Rp 18.000">
-                            Lihat Detail
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PRODUK 5 -->
-                <div class="produk-card" data-category="antibiotik" data-name="amoxicillin">
-                    <div class="produk-image"><i class="bi bi-bandaid"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Antibiotik</span>
-                        <h6>Amoxicillin</h6>
-                        <p>Antibiotik yang penggunaannya harus sesuai resep dokter.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 20.000</span>
-                            <small class="text-danger fw-semibold">Stok: 10</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Amoxicillin"
-                            data-category="Antibiotik"
-                            data-stok="10 Strip"
-                            data-expired="15/06/2026"
-                            data-description="Antibiotik yang penggunaannya harus sesuai resep dokter."
-                            data-price="Rp 20.000">
-                            Lihat Detail
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PRODUK 6 -->
-                <div class="produk-card" data-category="alat kesehatan" data-name="termometer digital">
-                    <div class="produk-image"><i class="bi bi-thermometer-half"></i></div>
-                    <div class="produk-info">
-                        <span class="produk-category">Alat Kesehatan</span>
-                        <h6>Termometer Digital</h6>
-                        <p>Alat untuk membantu mengukur suhu tubuh.</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="produk-price mb-0">Rp 35.000</span>
-                            <small class="text-muted">Stok: 14</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm w-100 detail-btn"
-                            data-name="Termometer Digital"
-                            data-category="Alat Kesehatan"
-                            data-stok="14 Unit"
-                            data-expired="-"
-                            data-description="Alat untuk membantu mengukur suhu tubuh."
-                            data-price="Rp 35.000">
-                            Lihat Detail
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="produkKosong" class="text-center py-5 d-none bg-white rounded-4 border mt-3">
-                <i class="bi bi-search fs-1 text-muted"></i>
-                <h6 class="mt-3 fw-bold">Produk tidak ditemukan</h6>
-                <p class="text-muted small mb-0">Coba gunakan kata kunci atau kategori lain.</p>
+                <div class="d-flex gap-2">
+    <button class="btn btn-outline-success btn-sm flex-fill detail-btn"
+        data-name="{{ $obat->nama }}"
+        data-category="{{ $obat->kategori }}"
+        data-stok="{{ $stok }} {{ $obat->satuan }}"
+        data-expired="{{ $expired }}"
+        data-description="{{ $obat->deskripsi }}"
+        data-price="{{ $harga }}">
+        Lihat Detail
+    </button>
+    <button class="btn btn-success btn-sm edit-btn"
+        title="Edit obat"
+        data-id="{{ $obat->id }}"
+        data-kode="{{ $obat->kode }}"
+        data-nama="{{ $obat->nama }}"
+        data-kategori="{{ $obat->kategori }}"
+        data-deskripsi="{{ $obat->deskripsi }}"
+        data-satuan="{{ $obat->satuan }}"
+        data-harga-beli="{{ $obat->harga_beli }}"
+        data-harga-jual="{{ $obat->harga_jual }}"
+        data-batas-minimum="{{ $obat->batas_minimum }}">
+        <i class="bi bi-pencil-square"></i>
+    </button>
+</div>
             </div>
         </div>
+    @endforeach
+</div>
+
+<div id="produkKosong" class="text-center py-5 {{ $obats->isEmpty() ? '' : 'd-none' }} bg-white rounded-4 border mt-3">
+    ...isi tetap sama...
+</div>
     </div>
 </div>
 
@@ -364,42 +284,167 @@
                 <h5 class="modal-title fw-bold">Tambah Data Obat</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="#" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Nama Obat</label>
-                        <input type="text" class="form-control" placeholder="Contoh: Paracetamol 500mg" required>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Kategori</label>
-                            <select class="form-select">
-                                <option>Obat Bebas</option>
-                                <option>Vitamin</option>
-                                <option>Antibiotik</option>
-                                <option>Alat Kesehatan</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Harga Jual (Rp)</label>
-                            <input type="number" class="form-control" placeholder="5000" required>
-                        </div>
-                    </div>
+            <form action="{{ route('mengelola.simpan') }}" method="POST">
+    @csrf
+    <div class="modal-body">
+        <div class="row g-2 mb-3">
+            <div class="col-4">
+                <label class="form-label small fw-semibold">Kode</label>
+                <input type="text" name="kode" value="{{ old('kode') }}" class="form-control" placeholder="OBT-001" required>
+            </div>
+            <div class="col-8">
+                <label class="form-label small fw-semibold">Nama Obat</label>
+                <input type="text" name="nama" value="{{ old('nama') }}" class="form-control" placeholder="Contoh: Paracetamol 500mg" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">Deskripsi</label>
+            <textarea name="deskripsi" class="form-control" rows="2" placeholder="Opsional">{{ old('deskripsi') }}</textarea>
+        </div>
+
+        <div class="row g-2 mb-3">
+            @php
+                $daftarKategori = $kategoris->isEmpty()
+                ? collect(['Obat Bebas', 'Vitamin', 'Antibiotik', 'Alat Kesehatan'])
+                : $kategoris;
+            @endphp
+
+            <div class="col-6">
+                <label class="form-label small fw-semibold">Kategori</label>
+                <select name="kategori" id="selectKategori" class="form-select" required>
+                    @foreach ($daftarKategori as $kat)
+                        <option value="{{ $kat }}" @selected(old('kategori') === $kat)>{{ $kat }}</option>
+                    @endforeach
+                    <option value="__lainnya__" @selected(old('kategori') === '__lainnya__')>Lainnya...</option>
+                </select>
+            </div>
+            <div class="col-6">
+                <label class="form-label small fw-semibold">Satuan</label>
+                <select name="satuan" class="form-select" required>
+                    @foreach (['Strip', 'Botol', 'Box', 'Unit', 'Tablet'] as $sat)
+                        <option value="{{ $sat }}" @selected(old('satuan') === $sat)>{{ $sat }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="mb-3 {{ old('kategori') === '__lainnya__' ? '' : 'd-none' }}" id="wrapKategoriLainnya">
+                <label class="form-label small fw-semibold">Nama Kategori Baru</label>
+                <input type="text" name="kategori_lainnya" id="inputKategoriLainnya" value="{{ old('kategori_lainnya') }}" maxlength="80" class="form-control" placeholder="Contoh: Obat Herbal">
+            </div>
+            <div class="col-6">
+                <label class="form-label small fw-semibold">Harga Beli (Rp)</label>
+                <input type="number" name="harga_beli" value="{{ old('harga_beli') }}" min="0" class="form-control" placeholder="3000" required>
+            </div>
+            <div class="col-6">
+                <label class="form-label small fw-semibold">Harga Jual (Rp)</label>
+                <input type="number" name="harga_jual" value="{{ old('harga_jual') }}" min="0" class="form-control" placeholder="5000" required>
+            </div>
+        </div>
+
                     <div class="row g-2">
-                        <div class="col-6">
+                        <div class="col-4">
                             <label class="form-label small fw-semibold">Stok Awal</label>
-                            <input type="number" class="form-control" placeholder="20" required>
+                            <input type="number" name="stok_awal" value="{{ old('stok_awal') }}" min="1" class="form-control" placeholder="20" required>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Tanggal Expired</label>
-                            <input type="date" class="form-control" required>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Batas Minimum</label>
+                            <input type="number" name="batas_minimum" value="{{ old('batas_minimum', 10) }}" min="0" class="form-control" required>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Tgl Expired</label>
+                            <input type="date" name="tanggal_kedaluwarsa" value="{{ old('tanggal_kedaluwarsa') }}" class="form-control" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Simpan Obat</button>
+                    <button type="submit" class="btn btn-success">Simpan Obat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- MODAL EDIT OBAT -->
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Edit Data Obat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" id="formEdit" action="#">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="edit_id" id="edit_id">
+
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Kode</label>
+                            <input type="text" name="kode" id="edit_kode" class="form-control" required>
+                        </div>
+                        <div class="col-8">
+                            <label class="form-label small fw-semibold">Nama Obat</label>
+                            <input type="text" name="nama" id="edit_nama" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Deskripsi</label>
+                        <textarea name="deskripsi" id="edit_deskripsi" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Kategori</label>
+                            <select name="kategori" id="edit_kategori" class="form-select" required>
+                                @foreach ($kategoris as $kat)
+                                    <option value="{{ $kat }}">{{ $kat }}</option>
+                                @endforeach
+                                <option value="__lainnya__">Lainnya...</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Satuan</label>
+                            <select name="satuan" id="edit_satuan" class="form-select" required>
+                                @foreach (['Strip', 'Botol', 'Box', 'Unit', 'Tablet'] as $sat)
+                                    <option value="{{ $sat }}">{{ $sat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-none" id="wrapEditKategoriLainnya">
+                        <label class="form-label small fw-semibold">Nama Kategori Baru</label>
+                        <input type="text" name="kategori_lainnya" id="edit_kategori_lainnya"
+                               maxlength="80" class="form-control" placeholder="Contoh: Obat Herbal">
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Harga Beli</label>
+                            <input type="number" name="harga_beli" id="edit_harga_beli" min="0" class="form-control" required>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Harga Jual</label>
+                            <input type="number" name="harga_jual" id="edit_harga_jual" min="0" class="form-control" required>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold">Batas Min.</label>
+                            <input type="number" name="batas_minimum" id="edit_batas_minimum" min="0" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <small class="text-muted d-block mt-3">
+                        Stok dan tanggal kedaluwarsa dikelola lewat menu Tambah Stok.
+                    </small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -416,6 +461,78 @@ document.addEventListener('DOMContentLoaded', function () {
     const jumlahProduk = document.getElementById('jumlahProduk');
     const produkKosong = document.getElementById('produkKosong');
 
+    const selectKategori = document.getElementById('selectKategori');
+    const wrapLainnya = document.getElementById('wrapKategoriLainnya');
+    const inputLainnya = document.getElementById('inputKategoriLainnya');
+
+    // ===== EDIT OBAT =====
+const modalEdit = new bootstrap.Modal(document.getElementById('modalEdit'));
+const formEdit = document.getElementById('formEdit');
+const urlUpdate = @json(route('mengelola.update', ['obat' => '__ID__']));
+const editKategori = document.getElementById('edit_kategori');
+const editWrapLainnya = document.getElementById('wrapEditKategoriLainnya');
+const editInputLainnya = document.getElementById('edit_kategori_lainnya');
+
+// Pilih opsi; kalau belum ada di dropdown, tambahkan dulu
+function pilihOpsi(select, value) {
+    if (![...select.options].some(o => o.value === value)) {
+        const opt = new Option(value, value);
+        const lainnya = [...select.options].find(o => o.value === '__lainnya__');
+        select.add(opt, lainnya || null);
+    }
+    select.value = value;
+}
+
+function toggleEditLainnya() {
+    const lainnya = editKategori.value === '__lainnya__';
+    editWrapLainnya.classList.toggle('d-none', !lainnya);
+    editInputLainnya.required = lainnya;
+}
+editKategori.addEventListener('change', toggleEditLainnya);
+
+function isiFormEdit(d) {
+    formEdit.action = urlUpdate.replace('__ID__', d.id);
+    document.getElementById('edit_id').value = d.id;
+    document.getElementById('edit_kode').value = d.kode ?? '';
+    document.getElementById('edit_nama').value = d.nama ?? '';
+    document.getElementById('edit_deskripsi').value = d.deskripsi ?? '';
+    document.getElementById('edit_harga_beli').value = d.hargaBeli ?? '';
+    document.getElementById('edit_harga_jual').value = d.hargaJual ?? '';
+    document.getElementById('edit_batas_minimum').value = d.batasMinimum ?? '';
+    pilihOpsi(document.getElementById('edit_satuan'), d.satuan);
+    pilihOpsi(editKategori, d.kategori);
+    editInputLainnya.value = d.kategoriLainnya ?? '';
+    toggleEditLainnya();
+}
+
+document.querySelectorAll('.edit-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        isiFormEdit(this.dataset);
+        modalEdit.show();
+    });
+});
+
+// Validasi gagal saat edit: buka lagi modal dengan isian terakhir
+@if ($errors->any() && old('edit_id'))
+    (function () {
+        const o = @json(old());
+        isiFormEdit({
+            id: o.edit_id, kode: o.kode, nama: o.nama, deskripsi: o.deskripsi,
+            kategori: o.kategori, kategoriLainnya: o.kategori_lainnya, satuan: o.satuan,
+            hargaBeli: o.harga_beli, hargaJual: o.harga_jual, batasMinimum: o.batas_minimum
+        });
+        modalEdit.show();
+    })();
+@endif
+    function toggleKategoriLainnya() {
+        const lainnya = selectKategori.value === '__lainnya__';
+        wrapLainnya.classList.toggle('d-none', !lainnya);
+        inputLainnya.required = lainnya;
+        if (lainnya) inputLainnya.focus();
+    }
+
+selectKategori.addEventListener('change', toggleKategoriLainnya);
+toggleKategoriLainnya(); // sesuaikan kondisi awal (misalnya saat old() terisi)
     let activeCategory = 'semua';
 
     function filterProduk() {

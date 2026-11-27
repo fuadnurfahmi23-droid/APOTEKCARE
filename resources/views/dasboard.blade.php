@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <small class="text-muted d-block">Total Obat</small>
-                    <h4 class="fw-bold mb-0 text-success">{{ $totalObat ?? 125 }} <span class="fs-6 fw-normal text-muted">Jenis</span></h4>
+                    <h4 class="fw-bold mb-0 text-success">{{ $totalObat }} <span class="fs-6 fw-normal text-muted">Jenis</span></h4>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 </div>
                 <div>
                     <small class="text-muted d-block">Stok Menipis</small>
-                    <h4 class="fw-bold mb-0 text-warning">{{ $stokMenipis ?? 12 }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                    <h4 class="fw-bold mb-0 text-warning">{{ $stokMenipis }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <small class="text-muted d-block">Mendekati Expired</small>
-                    <h4 class="fw-bold mb-0 text-primary">{{ $mendekatiExpired ?? 8 }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                    <h4 class="fw-bold mb-0 text-primary">{{ $mendekatiExpired }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <small class="text-muted d-block">Expired</small>
-                    <h4 class="fw-bold mb-0 text-danger">{{ $sudahExpired ?? 3 }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
+                    <h4 class="fw-bold mb-0 text-danger">{{ $sudahExpired }} <span class="fs-6 fw-normal text-muted">Obat</span></h4>
                 </div>
             </div>
         </div>
@@ -83,31 +83,36 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse ($ringkasan as $item)
                     <tr>
-                        <td class="fw-medium">Paracetamol</td>
-                        <td>5</td>
-                        <td>20/06/2026</td>
-                        <td><span class="badge bg-warning text-dark">Stok Menipis</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-medium">Amoxicillin</td>
-                        <td>10</td>
-                        <td>15/06/2026</td>
-                        <td><span class="badge bg-info text-dark">Mendekati Expired</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-medium">Obat Batuk</td>
-                        <td>0</td>
-                        <td>10/06/2025</td>
-                        <td><span class="badge bg-danger">Expired / Habis</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-medium">Vitamin C</td>
-                        <td>6</td>
-                        <td>30/06/2026</td>
-                        <td><span class="badge bg-success">Aman</span></td>
-                    </tr>
-                </tbody>
+                        <td class="fw-medium">{{ $item['nama'] }}</td>
+                        <td>{{ $item['stok'] }} {{ $item['satuan'] }}</td>
+                        <td>{{ $item['expired'] ? $item['expired']->format('d/m/Y') : '-' }}</td>
+                        <td>
+                    @switch($item['status'])
+                    @case('expired')
+                        <span class="badge bg-danger">Expired</span>
+                        @break
+                    @case('habis')
+                        <span class="badge bg-secondary">Habis</span>
+                        @break
+                    @case('menipis')
+                        <span class="badge bg-warning text-dark">Stok Menipis</span>
+                        @break
+                    @case('segera')
+                        <span class="badge bg-info text-dark">Mendekati Expired</span>
+                        @break
+                    @default
+                        <span class="badge bg-success">Aman</span>
+                @endswitch
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4" class="text-center text-muted py-4">Belum ada data obat.</td>
+        </tr>
+    @endforelse
+</tbody>
             </table>
         </div>
     </div>
